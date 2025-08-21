@@ -40,13 +40,26 @@
         }
         /* Light Mode - Alert Box specific colors */
         body[data-theme="light"] .alert-box {
-            background-color: #fef3c7;
-            border-color: #fbbf24;
-            color: #a16207;
+            background-color: #e0f2fe; /* Light blue */
+            border-color: #38b2ac; /* Teal border */
+            color: #0c4a6e; /* Dark blue text */
         }
         body[data-theme="light"] .alert-box .font-semibold {
-            color: #78350f;
+            color: #065f46; /* Darker green for bold text */
         }
+        /* Light Mode - Control Buttons vibrant colors */
+        body[data-theme="light"] .control-button.primary-action { background-color: #EC4899; } /* Fuchsia-500 */
+        body[data-theme="light"] .control-button.primary-action:hover { background-color: #DB2777; } /* Fuchsia-600 */
+        body[data-theme="light"] .control-button.secondary-action { background-color: #F97316; } /* Orange-500 */
+        body[data-theme="light"] .control-button.secondary-action:hover { background-color: #EA580C; } /* Orange-600 */
+        body[data-theme="light"] .control-button.tertiary-action { background-color: #3B82F6; } /* Blue-500 */
+        body[data-theme="light"] .control-button.tertiary-action:hover { background-color: #2563EB; } /* Blue-600 */
+
+        /* WhatsApp and Discord colors (kept vibrant) */
+        body[data-theme="light"] .whatsapp-button { background-color: #25D366; } /* WhatsApp Green */
+        body[data-theme="light"] .whatsapp-button:hover { background-color: #1DA851; }
+        body[data-theme="light"] .discord-button { background-color: #7289DA; } /* Discord Purple */
+        body[data-theme="light"] .discord-button:hover { background-color: #5B6FB3; }
 
 
         /* Dark Mode */
@@ -75,13 +88,26 @@
         }
         /* Dark Mode - Alert Box specific colors */
         body[data-theme="dark"] .alert-box {
-            background-color: #7c2d12;
-            border-color: #f97316;
-            color: #ffedd5;
+            background-color: #1a565a; /* Darker teal */
+            border-color: #2dd4bf; /* Lighter teal border */
+            color: #e0f2f7; /* Very light blue text */
         }
         body[data-theme="dark"] .alert-box .font-semibold {
-            color: #fff7ed;
+            color: #99f6e4; /* Lighter teal for bold text */
         }
+        /* Dark Mode - Control Buttons colors */
+        body[data-theme="dark"] .control-button.primary-action { background-color: #831843; } /* Fuchsia-700 */
+        body[data-theme="dark"] .control-button.primary-action:hover { background-color: #6C0E2F; }
+        body[data-theme="dark"] .control-button.secondary-action { background-color: #C2410C; } /* Orange-700 */
+        body[data-theme="dark"] .control-button.secondary-action:hover { background-color: #9A3412; }
+        body[data-theme="dark"] .control-button.tertiary-action { background-color: #1D4ED8; } /* Blue-700 */
+        body[data-theme="dark"] .control-button.tertiary-action:hover { background-color: #1E40AF; }
+        
+        /* WhatsApp and Discord colors (kept vibrant for dark mode) */
+        body[data-theme="dark"] .whatsapp-button { background-color: #22C55E; } /* Green-500 */
+        body[data-theme="dark"] .whatsapp-button:hover { background-color: #16A34A; }
+        body[data-theme="dark"] .discord-button { background-color: #8B5CF6; } /* Violet-500 */
+        body[data-theme="dark"] .discord-button:hover { background-color: #7C3AED; }
 
 
         .container {
@@ -127,9 +153,9 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .course-list li:before {
-            content: '📚'; /* Book emoji for course items */
+        .course-list li .course-emoji { /* Style for the new emoji span */
             margin-right: 0.5rem;
+            flex-shrink: 0; /* Prevent emoji from shrinking */
         }
 
         /* Block-specific colors for section headers */
@@ -181,6 +207,33 @@
             border-radius: 0.5rem;
         }
 
+        /* Day header */
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .day-header h3 {
+            flex-grow: 1;
+            font-weight: bold;
+            font-size: 1.125rem; /* text-lg */
+        }
+
+        /* Course item checkbox and label */
+        .course-item input[type="checkbox"] {
+            margin-top: 0;
+            min-width: 1rem;
+            min-height: 1rem;
+            cursor: pointer;
+        }
+        .course-item label {
+            flex-grow: 1;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+
         /* Print-specific styles */
         @media print {
             body > *:not(.container) {
@@ -197,21 +250,36 @@
                 width: 100% !important;
                 height: auto !important;
             }
-            .week-block {
-                page-break-after: always; /* Each week on a new page */
+            .week-accordion {
+                page-break-after: always;
             }
-            .week-block:last-child {
+            .week-accordion:last-child {
                 page-break-after: auto;
+            }
+            details {
+                display: block !important;
+            }
+            details[open] > summary::after {
+                content: '' !important;
+            }
+            summary {
+                cursor: default !important;
+                pointer-events: none !important;
             }
             .day-card {
                 box-shadow: none !important;
-                border: 1px solid #ccc !important; /* Add border for print clarity */
+                border: 1px solid #ccc !important;
             }
             /* Ensure text is black on print */
-            body, .section-header, .day-card, .course-list li {
+            body, .section-header, .day-card, .course-list li, .day-header h3, .course-item label {
                 color: #000 !important;
                 background-color: #fff !important;
                 border-color: #ccc !important;
+            }
+            /* Removed progress bar related print styles */
+            .course-item input[type="checkbox"] {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
             }
         }
     </style>
@@ -247,7 +315,7 @@
         </div>
 
         <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-6 text-gray-900">
-            Programme de Révision : Gestionnaire de Paie 🎯
+            Programme de Révision : Gestionnaire de Paie
         </h1>
 
         <div class="alert-box text-center border-l-4 p-4 rounded-lg mb-8 shadow-md" role="alert">
@@ -256,200 +324,248 @@
         </div>
 
         <!-- Semaine 1 -->
-        <div class="week-block">
-            <h2 class="section-header block-pink rounded-t-lg mb-4">Semaine 1 : Fondamentaux & Paie (Paramétrage & Variables) 📚</h2>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 1 : Warm-up & Bases Essentielles (Optionnel)</h3>
-                <p class="text-gray-700">Si vous avez besoin de rafraîchir vos connaissances de base, c'est le moment !</p>
-                <ul class="course-list">
-                    <li>B0_M1_Maîtriser les notions mathématiques de base</li>
-                    <li>B0_M2_Acquérir les bases du droit social et de la gestion de la paie</li>
-                    <li>B0_M3_Réaliser des écrits professionnels (focus sur la rédaction claire)</li>
-                </ul>
+        <details class="week-accordion" data-week="1" open>
+            <summary class="section-header block-pink rounded-t-lg">Semaine 1 : Fondamentaux & Paie (Paramétrage & Variables) 📚</summary>
+            <div class="week-content p-4">
+                <div class="day-card" data-week="1" data-day="1">
+                    <div class="day-header">
+                        <h3>Jour 1 : Warm-up & Bases Essentielles (Optionnel)</h3>
+                    </div>
+                    <p class="text-gray-700">Si vous avez besoin de rafraîchir vos connaissances de base, c'est le moment !</p>
+                    <ul class="course-list" data-day-id="week1-day1">
+                        <li class="course-item"><input type="checkbox" id="course-week1-day1-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day1-1">B0_M1_Maîtriser les notions mathématiques de base</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day1-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day1-2">B0_M2_Acquérir les bases du droit social et de la gestion de la paie</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day1-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day1-3">B0_M3_Réaliser des écrits professionnels (focus sur la rédaction claire)</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="1" data-day="2">
+                    <div class="day-header">
+                        <h3>Jour 2 : Compétence C1.1 - Paramétrage du Logiciel de Paie</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week1-day2">
+                        <li class="course-item"><input type="checkbox" id="course-week1-day2-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day2-1">B1_M1_005_La création d'une société</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day2-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day2-2">B1_M1_006_Le paramétrage d'une société</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day2-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day2-3">B1_M1_008_La création des fiches salariés</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day2-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day2-4">B1_M1_011_Le paramétrage des cotisations sociales</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day2-5" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day2-5">B1_M1_016_Synthèse et application : Paramétrer le logiciel de paie</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="1" data-day="3">
+                    <div class="day-header">
+                        <h3>Jour 3 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 1)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week1-day3">
+                        <li class="course-item"><input type="checkbox" id="course-week1-day3-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day3-1">B1_M2_004_Le temps de travail</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day3-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day3-2">B1_M2_005_La rémunération</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day3-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day3-3">B1_M3_008_La rémunération brute : le salaire de base, les primes et la retenue pour absence</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day3-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day3-4">B1_M3_009_La rémunération brute : les heures supplémentaires et le dimanche travaillé</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="1" data-day="4">
+                    <div class="day-header">
+                        <h3>Jour 4 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 2)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week1-day4">
+                        <li class="course-item"><input type="checkbox" id="course-week1-day4-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day4-1">B1_M3_003_La rémunération brute : l'acquisition et la prise de congés payés</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day4-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day4-2">B1_M3_004_La rémunération brute : l’indemnité de congés payés</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day4-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day4-3">B1_M3_011_La rémunération brute : les avantages en nature</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day4-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day4-4">B1_M3_012_La rémunération brute : l’arrêt de travail, la retenue pour absence, la subrogation et les IJSS</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="1" data-day="5">
+                    <div class="day-header">
+                        <h3>Jour 5 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 3)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week1-day5">
+                        <li class="course-item"><input type="checkbox" id="course-week1-day5-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day5-1">B1_M4_006_Le bulletin de salaire Apprenti</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day5-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day5-2">B1_M4_007_La gratification stagiaire</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week1-day5-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week1-day5-3">B1_M4_008_Synthèse et application : Collecter et traiter les variables de paie</label></li>
+                    </ul>
+                </div>
             </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C1.1 - Paramétrage du Logiciel de Paie</h3>
-                <ul class="course-list">
-                    <li>B1_M1_005_La création d'une société</li>
-                    <li>B1_M1_006_Le paramétrage d'une société</li>
-                    <li>B1_M1_008_La création des fiches salariés</li>
-                    <li>B1_M1_011_Le paramétrage des cotisations sociales</li>
-                    <li>B1_M1_016_Synthèse et application : Paramétrer le logiciel de paie</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 1)</h3>
-                <ul class="course-list">
-                    <li>B1_M2_004_Le temps de travail</li>
-                    <li>B1_M2_005_La rémunération</li>
-                    <li>B1_M3_008_La rémunération brute : le salaire de base, les primes et la retenue pour absence</li>
-                    <li>B1_M3_009_La rémunération brute : les heures supplémentaires et le dimanche travaillé</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 2)</h3>
-                <ul class="course-list">
-                    <li>B1_M3_003_La rémunération brute : l'acquisition et la prise de congés payés</li>
-                    <li>B1_M3_004_La rémunération brute : l’indemnité de congés payés</li>
-                    <li>B1_M3_011_La rémunération brute : les avantages en nature</li>
-                    <li>B1_M3_012_La rémunération brute : l’arrêt de travail, la retenue pour absence, la subrogation et les IJSS</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 3)</h3>
-                <ul class="course-list">
-                    <li>B1_M4_006_Le bulletin de salaire Apprenti</li>
-                    <li>B1_M4_007_La gratification stagiaire</li>
-                    <li>B1_M4_008_Synthèse et application : Collecter et traiter les variables de paie</li>
-                </ul>
-            </div>
-        </div>
+        </details>
 
         <!-- Semaine 2 -->
-        <div class="week-block">
-            <h2 class="section-header block-orange rounded-t-lg mb-4">Semaine 2 : Paie (Contrôle, Édition & Déclarations) 📈</h2>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 1)</h3>
-                <ul class="course-list">
-                    <li>B1_M5_001_Les diverses cotisations sociales</li>
-                    <li>B1_M5_002_Les bases de calcul des cotisations sociales</li>
-                    <li>B1_M5_003_Les réductions de cotisations sociales</li>
-                </ul>
+        <details class="week-accordion" data-week="2">
+            <summary class="section-header block-orange rounded-t-lg">Semaine 2 : Paie (Contrôle, Édition & Déclarations) 📈</summary>
+            <div class="week-content p-4">
+                <div class="day-card" data-week="2" data-day="1">
+                    <div class="day-header">
+                        <h3>Jour 1 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 1)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week2-day1">
+                        <li class="course-item"><input type="checkbox" id="course-week2-day1-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day1-1">B1_M5_001_Les diverses cotisations sociales</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day1-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day1-2">B1_M5_002_Les bases de calcul des cotisations sociales</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day1-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day1-3">B1_M5_003_Les réductions de cotisations sociales</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="2" data-day="2">
+                    <div class="day-header">
+                        <h3>Jour 2 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 2)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week2-day2">
+                        <li class="course-item"><input type="checkbox" id="course-week2-day2-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day2-1">B1_M5_005_Le salaire net et le salaire imposable</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day2-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day2-2">B1_M5_006_Les impacts du prélèvement à la source</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day2-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day2-3">B1_M5_008_Synthèse et application : Contrôler et éditer les Bulletins de paie</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="2" data-day="3">
+                    <div class="day-header">
+                        <h3>Jour 3 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 1)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week2-day3">
+                        <li class="course-item"><input type="checkbox" id="course-week2-day3-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day3-1">B1_M6_003_Les modalités déclaratives</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day3-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day3-2">B1_M6_005_Le contenu des déclarations sociales : les cotisations, le PAS et les contributions sociales</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day3-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day3-3">B1_M6_006_La gestion des arrêts de travail en paie</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="2" data-day="4">
+                    <div class="day-header">
+                        <h3>Jour 4 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 2)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week2-day4">
+                        <li class="course-item"><input type="checkbox" id="course-week2-day4-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day4-1">B1_M6_007_La taxe d'apprentissage</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day4-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day4-2">B1_M6_008_La gestion de la déclaration d'emploi des travailleurs handicapés</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day4-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day4-3">B1_M6_012_Synthèse et application : Gérer les déclarations sociales</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="2" data-day="5">
+                    <div class="day-header">
+                        <h3>Jour 5 : Compétence C1.5 - Analyse des Écarts Paie/Comptabilité</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week2-day5">
+                        <li class="course-item"><input type="checkbox" id="course-week2-day5-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day5-1">B1_M7_004_Les opérations comptables issues de la paie</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day5-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day5-2">B1_M7_005_Comptabilisation de la paie</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day5-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day5-3">B1_M7_006_L'analyse des causes</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week2-day5-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week2-day5-4">B1_M7_009_Synthèse et application : Analyser les écarts entre la paie et la comptabilité</label></li>
+                    </ul>
+                </div>
             </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 2)</h3>
-                <ul class="course-list">
-                    <li>B1_M5_005_Le salaire net et le salaire imposable</li>
-                    <li>B1_M5_006_Les impacts du prélèvement à la source</li>
-                    <li>B1_M5_008_Synthèse et application : Contrôler et éditer les Bulletins de paie</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 1)</h3>
-                <ul class="course-list">
-                    <li>B1_M6_003_Les modalités déclaratives</li>
-                    <li>B1_M6_005_Le contenu des déclarations sociales : les cotisations, le PAS et les contributions sociales</li>
-                    <li>B1_M6_006_La gestion des arrêts de travail en paie</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 2)</h3>
-                <ul class="course-list">
-                    <li>B1_M6_007_La taxe d'apprentissage</li>
-                    <li>B1_M6_008_La gestion de la déclaration d'emploi des travailleurs handicapés</li>
-                    <li>B1_M6_012_Synthèse et application : Gérer les déclarations sociales</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C1.5 - Analyse des Écarts Paie/Comptabilité</h3>
-                <ul class="course-list">
-                    <li>B1_M7_004_Les opérations comptables issues de la paie</li>
-                    <li>B1_M7_005_Comptabilisation de la paie</li>
-                    <li>B1_M7_006_L'analyse des causes</li>
-                    <li>B1_M7_009_Synthèse et application : Analyser les écarts entre la paie et la comptabilité</li>
-                </ul>
-            </div>
-        </div>
+        </details>
 
         <!-- Semaine 3 -->
-        <div class="week-block">
-            <h2 class="section-header block-yellow rounded-t-lg mb-4">Semaine 3 : Gestion Administrative du Personnel 📋</h2>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C2.1 - Établissement des Contrats de Travail</h3>
-                <ul class="course-list">
-                    <li>B2_M1_003_Maîtriser la rédaction d’un contrat de travail</li>
-                    <li>B2_M1_005_Le contrat de travail à durée indéterminée</li>
-                    <li>B2_M1_006_Le CDD et le contrat de travail temporaire</li>
-                    <li>B2_M1_010_Synthèse et application : Etablir les contrats de travail</li>
-                </ul>
+        <details class="week-accordion" data-week="3">
+            <summary class="section-header block-yellow rounded-t-lg">Semaine 3 : Gestion Administrative du Personnel 📋</summary>
+            <div class="week-content p-4">
+                <div class="day-card" data-week="3" data-day="1">
+                    <div class="day-header">
+                        <h3>Jour 1 : Compétence C2.1 - Établissement des Contrats de Travail</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week3-day1">
+                        <li class="course-item"><input type="checkbox" id="course-week3-day1-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day1-1">B2_M1_003_Maîtriser la rédaction d’un contrat de travail</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day1-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day1-2">B2_M1_005_Le contrat de travail à durée indéterminée</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day1-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day1-3">B2_M1_006_Le CDD et le contrat de travail temporaire</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day1-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day1-4">B2_M1_010_Synthèse et application : Etablir les contrats de travail</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="3" data-day="2">
+                    <div class="day-header">
+                        <h3>Jour 2 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 1)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week3-day2">
+                        <li class="course-item"><input type="checkbox" id="course-week3-day2-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day2-1">B2_M2_003_Les formalités administratives d'embauche</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day2-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day2-2">B2_M2_006_La rupture du contrat de travail : introduction</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day2-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day2-3">B2_M2_007_Le licenciement</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="3" data-day="3">
+                    <div class="day-header">
+                        <h3>Jour 3 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 2)</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week3-day3">
+                        <li class="course-item"><input type="checkbox" id="course-week3-day3-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day3-1">B2_M2_009_Les fins de contrat : cas du CDD, ICP, Indemnité RTT, ...</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day3-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day3-2">B2_M2_010_Les fins de contrat : rupture conventionnelle, départ et mise à la retraite</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day3-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day3-3">B2_M2_012_L'édition des documents de fin de contrat</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day3-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day3-4">B2_M2_013_Synthèse et application : Traiter les entrées et sorties des salariés</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="3" data-day="4">
+                    <div class="day-header">
+                        <h3>Jour 4 : Compétence C2.3 - Gestion des Dossiers du Personnel</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week3-day4">
+                        <li class="course-item"><input type="checkbox" id="course-week3-day4-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day4-1">B2_M3_004_La digitalisation des dossiers du personnel</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day4-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day4-2">B2_M3_006_RGPD : Règlement Général de Protection des Données</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day4-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day4-3">B2_M3_007_Synthèse et application : Gérer les dossiers du personnel</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="3" data-day="5">
+                    <div class="day-header">
+                        <h3>Jour 5 : Compétence C2.4 - Communication avec Partenaires Externes</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week3-day5">
+                        <li class="course-item"><input type="checkbox" id="course-week3-day5-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day5-1">B2_M4_001_Les partenaires externes du service paie</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day5-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day5-2">B2_M4_007_Le rôle et le contrôle de l'URSSAF</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week3-day5-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week3-day5-3">B2_M4_008_Synthèse et application : Communiquer avec les partenaires externes</label></li>
+                    </ul>
+                </div>
             </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 1)</h3>
-                <ul class="course-list">
-                    <li>B2_M2_003_Les formalités administratives d'embauche</li>
-                    <li>B2_M2_006_La rupture du contrat de travail : introduction</li>
-                    <li>B2_M2_007_Le licenciement</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 2)</h3>
-                <ul class="course-list">
-                    <li>B2_M2_009_Les fins de contrat : cas du CDD, ICP, Indemnité RTT, ...</li>
-                    <li>B2_M2_010_Les fins de contrat : rupture conventionnelle, départ et mise à la retraite</li>
-                    <li>B2_M2_012_L'édition des documents de fin de contrat</li>
-                    <li>B2_M2_013_Synthèse et application : Traiter les entrées et sorties des salariés</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C2.3 - Gestion des Dossiers du Personnel</h3>
-                <ul class="course-list">
-                    <li>B2_M3_004_La digitalisation des dossiers du personnel</li>
-                    <li>B2_M3_006_RGPD : Règlement Général de Protection des Données</li>
-                    <li>B2_M3_007_Synthèse et application : Gérer les dossiers du personnel</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C2.4 - Communication avec Partenaires Externes</h3>
-                <ul class="course-list">
-                    <li>B2_M4_001_Les partenaires externes du service paie</li>
-                    <li>B2_M4_007_Le rôle et le contrôle de l'URSSAF</li>
-                    <li>B2_M4_008_Synthèse et application : Communiquer avec les partenaires externes</li>
-                </ul>
-            </div>
-        </div>
+        </details>
 
         <!-- Semaine 4 -->
-        <div class="week-block">
-            <h2 class="section-header block-pink rounded-t-lg mb-4">Semaine 4 : Conseil & Assistance + Révision Générale 🚀</h2>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C3.1 - Réalisation d'une Veille Juridique</h3>
-                <ul class="course-list">
-                    <li>B3_M1_002_La démarche de veille</li>
-                    <li>B3_M1_003_La veille juridique</li>
-                    <li>B3_M1_011_Comment effectuer une veille active</li>
-                    <li>B3_M1_013_Synthèse et application : Réaliser une veille juridique</li>
-                </ul>
+        <details class="week-accordion" data-week="4">
+            <summary class="section-header block-pink rounded-t-lg">Semaine 4 : Conseil & Assistance + Révision Générale 🚀</summary>
+            <div class="week-content p-4">
+                <div class="day-card" data-week="4" data-day="1">
+                    <div class="day-header">
+                        <h3>Jour 1 : Compétence C3.1 - Réalisation d'une Veille Juridique</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week4-day1">
+                        <li class="course-item"><input type="checkbox" id="course-week4-day1-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day1-1">B3_M1_002_La démarche de veille</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day1-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day1-2">B3_M1_003_La veille juridique</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day1-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day1-3">B3_M1_011_Comment effectuer une veille active</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day1-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day1-4">B3_M1_013_Synthèse et application : Réaliser une veille juridique</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="4" data-day="2">
+                    <div class="day-header">
+                        <h3>Jour 2 : Compétence C3.2 - Diagnostic de Conformité de la Paie</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week4-day2">
+                        <li class="course-item"><input type="checkbox" id="course-week4-day2-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day2-1">B3_M2_001_L'analyse documentaire</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day2-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day2-2">B3_M2_003_L'identification des écarts</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day2-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day2-3">B3_M2_004_L'identification des risques encourus</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day2-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day2-4">B3_M2_007_Synthèse et application : Diagnostiquer le conformité de la paie</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="4" data-day="3">
+                    <div class="day-header">
+                        <h3>Jour 3 : Compétence C3.3 - Communication avec Collaborateurs & Managers</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week4-day3">
+                        <li class="course-item"><input type="checkbox" id="course-week4-day3-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day3-1">B3_M3_001_Les fondamentaux de la communication professionnelle</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day3-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day3-2">B3_M3_002_L'écoute active</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day3-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day3-3">B3_M3_006_Rédiger une réponse professionnelle</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day3-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day3-4">B3_M3_011_Synthèse et application : Communiquer avec les collaborateurs et managers</label></li>
+                    </ul>
+                </div>
+                <div class="day-card" data-week="4" data-day="4">
+                    <div class="day-header">
+                        <h3>Jour 4 : Compétences C3.4 & C3.5 - Reporting & Assistance SIRH</h3>
+                    </div>
+                    <ul class="course-list" data-day-id="week4-day4">
+                        <li class="course-item"><input type="checkbox" id="course-week4-day4-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day4-1">B3_M4_001_Les fondamentaux d'excel</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day4-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day4-2">B3_M4_005_L'édition des tableaux de bord sociaux</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day4-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day4-3">B3_M5_003_Les fonctionnalités du SIRH</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day4-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day4-4">B3_M5_007_L'utilisation du SIRH au quotidien par le collaborateur</label></li>
+                        <li class="course-item"><input type="checkbox" id="course-week4-day4-5" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day4-5">B3_M5_010_Synthèse et application : Assister les utilisateurs du SIRH</label></li>
+                    </ul>
+                </div>
             </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C3.2 - Diagnostic de Conformité de la Paie</h3>
-                <ul class="course-list">
-                    <li>B3_M2_001_L'analyse documentaire</li>
-                    <li>B3_M2_003_L'identification des écarts</li>
-                    <li>B3_M2_004_L'identification des risques encourus</li>
-                    <li>B3_M2_007_Synthèse et application : Diagnostiquer le conformité de la paie</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C3.3 - Communication avec Collaborateurs & Managers</h3>
-                <ul class="course-list">
-                    <li>B3_M3_001_Les fondamentaux de la communication professionnelle</li>
-                    <li>B3_M3_002_L'écoute active</li>
-                    <li>B3_M3_006_Rédiger une réponse professionnelle</li>
-                    <li>B3_M3_011_Synthèse et application : Communiquer avec les collaborateurs et managers</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétences C3.4 & C3.5 - Reporting & Assistance SIRH</h3>
-                <ul class="course-list">
-                    <li>B3_M4_001_Les fondamentaux d'excel</li>
-                    <li>B3_M4_005_L'édition des tableaux de bord sociaux</li>
-                    <li>B3_M5_003_Les fonctionnalités du SIRH</li>
-                    <li>B3_M5_007_L'utilisation du SIRH au quotidien par le collaborateur</li>
-                    <li>B3_M5_010_Synthèse et application : Assister les utilisateurs du SIRH</li>
-                </ul>
-            </div>
-            <div class="day-card">
-                <h3 class="font-bold text-lg mb-2">Jour 5 : Révision Générale & Pratique Intensive ! ✨</h3>
+            <div class="day-card" data-week="4" data-day="5">
+                <div class="day-header">
+                    <h3>Jour 5 : Révision Générale & Pratique Intensive ! ✨</h3>
+                </div>
                 <p class="text-gray-700">Consacrez cette journée à :</p>
-                <ul class="course-list">
-                    <li>Revoir les notions qui vous semblent encore floues.</li>
-                    <li>Refaire des exercices pratiques ou des cas d'étude.</li>
-                    <li>Simuler des mises en situation professionnelle.</li>
-                    <li>Repasser sur les synthèses de chaque bloc.</li>
-                    <li>**Détendez-vous et ayez confiance en vous !**</li>
+                <ul class="course-list" data-day-id="week4-day5">
+                    <li class="course-item"><input type="checkbox" id="course-week4-day5-1" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day5-1">Revoir les notions qui vous semblent encore floues.</label></li>
+                    <li class="course-item"><input type="checkbox" id="course-week4-day5-2" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day5-2">Refaire des exercices pratiques ou des cas d'étude.</label></li>
+                    <li class="course-item"><input type="checkbox" id="course-week4-day5-3" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day5-3">Simuler des mises en situation professionnelle.</label></li>
+                    <li class="course-item"><input type="checkbox" id="course-week4-day5-4" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day5-4">Repasser sur les synthèses de chaque bloc.</label></li>
+                    <li class="course-item"><input type="checkbox" id="course-week4-day5-5" class="h-4 w-4 text-gray-600 rounded focus:ring-gray-500 cursor-pointer"><span class="course-emoji">📚</span><label for="course-week4-day5-5">**Détendez-vous et ayez confiance en vous !**</label></li>
                 </ul>
             </div>
-        </div>
+        </details>
 
         <div class="text-center mt-8 text-gray-700">
             <p class="mb-4">Ce programme est une suggestion. N'hésitez pas à l'adapter en fonction de vos forces et faiblesses. Le plus important est la régularité et la compréhension des concepts clés !</p>
@@ -459,12 +575,11 @@
     </div>
 
     <script>
-        // Theme and sound logic (simplified as no interactive elements here, but kept for consistency)
         document.addEventListener('DOMContentLoaded', () => {
-            const body = document.body;
             const themeToggle = document.getElementById('theme-toggle');
             const soundToggle = document.getElementById('sound-toggle');
             const printButton = document.getElementById('print-button');
+            const body = document.body;
 
             let isSoundOn = localStorage.getItem('isSoundOn') === 'true';
             let audioContext;
@@ -473,6 +588,11 @@
             } catch (e) {
                 console.warn('Web Audio API non supporté dans ce navigateur.');
             }
+
+            // Helper to get full course name (e.g., "B0_M1_001_Rappels des règles de calcul numérique")
+            const getFullCourseName = (courseId) => {
+                return courseId.replace(/_/g, ' ');
+            };
 
             const playClickSound = () => {
                 if (!isSoundOn || !audioContext) return;
@@ -492,12 +612,14 @@
                 body.dataset.theme = theme;
                 const themeIcon = document.getElementById('theme-icon');
                 const themeText = document.getElementById('theme-text');
-                if (theme === 'dark') {
-                    themeIcon.textContent = '🌙';
-                    themeText.textContent = 'Mode Jour';
-                } else {
-                    themeIcon.textContent = '☀️';
-                    themeText.textContent = 'Mode Nuit';
+                if (themeIcon && themeText) { // Null check for elements
+                    if (theme === 'dark') {
+                        themeIcon.textContent = '🌙';
+                        themeText.textContent = 'Mode Jour';
+                    } else {
+                        themeIcon.textContent = '☀️';
+                        themeText.textContent = 'Mode Nuit';
+                    }
                 }
                 localStorage.setItem('theme', theme);
             };
@@ -505,37 +627,147 @@
             const updateSoundToggleButton = () => {
                 const soundIcon = document.getElementById('sound-icon');
                 const soundText = document.getElementById('sound-text');
-                if (isSoundOn) {
-                    soundIcon.textContent = '🔊';
-                    soundText.textContent = 'Son ON';
-                } else {
-                    soundIcon.textContent = '🔇';
-                    soundText.textContent = 'Son OFF';
+                if (soundIcon && soundText) { // Null check for elements
+                    if (isSoundOn) {
+                        soundIcon.textContent = '🔊';
+                        soundText.textContent = 'Son ON';
+                    } else {
+                        soundIcon.textContent = '🔇';
+                        soundText.textContent = 'Son OFF';
+                    }
                 }
                 localStorage.setItem('isSoundOn', isSoundOn);
             };
 
-            // Load initial theme and sound state
-            setTheme(localStorage.getItem('theme') || 'light');
-            updateSoundToggleButton();
+            // Updates the progress bar for a given day based on its course checkboxes
+            const updateDayProgressBar = (dayCardElement) => {
+                // Removed progress bar and percentage logic as per user request
+                const courseList = dayCardElement.querySelector(`.course-list[data-day-id="${dayCardElement.dataset.week + '-day' + dayCardElement.dataset.day}"]`);
 
-            // Attach event listeners
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = body.dataset.theme;
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                setTheme(newTheme);
-                playClickSound();
-            });
+                if (!courseList) return; // Ensure element exists
 
-            soundToggle.addEventListener('click', () => {
-                isSoundOn = !isSoundOn;
+                const courseCheckboxes = courseList.querySelectorAll('input[type="checkbox"]');
+                
+                // Save individual course checkbox states
+                courseCheckboxes.forEach(cb => {
+                    saveCourseCheckboxState(cb.id, cb.checked);
+                });
+            };
+
+            // Saves the state of an individual course checkbox
+            const saveCourseCheckboxState = (id, checked) => {
+                let courseStates = JSON.parse(localStorage.getItem('revisionCourseCheckboxesState') || '{}');
+                courseStates[id] = checked;
+                localStorage.setItem('revisionCourseCheckboxesState', JSON.stringify(courseStates));
+            };
+
+            // Loads the state of an individual course checkbox
+            const loadCourseCheckboxState = (id) => {
+                let courseStates = JSON.parse(localStorage.getItem('revisionCourseCheckboxesState') || '{}');
+                return courseStates[id] || false;
+            };
+
+            // Initial load for all elements
+            const loadAllStates = () => {
+                setTheme(localStorage.getItem('theme') || 'light');
                 updateSoundToggleButton();
-                playClickSound(); // Play sound when toggling sound itself
+
+                // For each day card, load course checkboxes and update progress bar
+                document.querySelectorAll('.day-card').forEach(dayCard => {
+                    const courseList = dayCard.querySelector(`.course-list[data-day-id="${dayCard.dataset.week + '-day' + dayCard.dataset.day}"]`);
+                    if (courseList) {
+                        courseList.querySelectorAll('input[type="checkbox"]').forEach(courseCheckbox => {
+                            courseCheckbox.checked = loadCourseCheckboxState(courseCheckbox.id);
+                            // Attach event listener for course checkboxes
+                            courseCheckbox.addEventListener('change', () => {
+                                updateDayProgressBar(dayCard); // Update progress when course is checked
+                                playClickSound();
+                            });
+                            // Make course label clickable
+                            const courseLabel = courseCheckbox.nextElementSibling;
+                            if (courseLabel) {
+                                courseLabel.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    courseCheckbox.checked = !courseCheckbox.checked;
+                                    courseCheckbox.dispatchEvent(new Event('change'));
+                                });
+                            }
+                        });
+                    }
+                    updateDayProgressBar(dayCard); // Initial update of progress (now just saving states)
+                });
+
+                // Load and apply accordion states
+                const savedAccordionStates = JSON.parse(localStorage.getItem('accordionStates'));
+                if (savedAccordionStates) {
+                    document.querySelectorAll('details.week-accordion').forEach(details => {
+                        details.open = savedAccordionStates[details.dataset.week] || false;
+                    });
+                } else {
+                    // Default: open the first week accordion if no saved state
+                    const firstWeekAccordion = document.querySelector('details.week-accordion');
+                    if (firstWeekAccordion) firstWeekAccordion.open = true;
+                }
+            };
+
+            // Attach event listeners for main control buttons (with null checks)
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = body.dataset.theme;
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    setTheme(newTheme);
+                    playClickSound();
+                });
+            }
+
+            if (soundToggle) {
+                soundToggle.addEventListener('click', () => {
+                    isSoundOn = !isSoundOn;
+                    updateSoundToggleButton();
+                    playClickSound();
+                });
+            }
+
+            if (printButton) {
+                printButton.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            // Reset button functionality
+            document.getElementById('reset-button').addEventListener('click', () => {
+                if (confirm('Êtes-vous sûr de vouloir réinitialiser tout le programme de révision ? Cela effacera votre progression sauvegardée.')) {
+                    localStorage.removeItem('revisionCourseCheckboxesState'); // Course checkboxes state
+                    localStorage.removeItem('accordionStates'); // Accordion states
+                    localStorage.setItem('theme', 'light'); // Reset theme to light
+                    localStorage.setItem('isSoundOn', 'true'); // Reset sound to ON
+
+                    // Reload all states to reflect reset
+                    location.reload(); // Easiest way to fully reset all checkboxes and progress bars
+                }
             });
 
-            printButton.addEventListener('click', () => {
-                window.print();
+            // Accordion toggle behavior: close others when one opens
+            document.querySelectorAll('details.week-accordion').forEach(detailsElement => {
+                detailsElement.addEventListener('toggle', (event) => {
+                    if (event.target.open) {
+                        document.querySelectorAll('details.week-accordion').forEach(otherDetails => {
+                            if (otherDetails !== event.target && otherDetails.open) {
+                                otherDetails.open = false;
+                            }
+                        });
+                    }
+                    // Save accordion states
+                    const accordionStates = {};
+                    document.querySelectorAll('details.week-accordion').forEach(details => {
+                        accordionStates[details.dataset.week] = details.open;
+                    });
+                    localStorage.setItem('accordionStates', JSON.stringify(accordionStates));
+                });
             });
+
+            // Initial load of all states when the DOM is ready
+            loadAllStates();
         });
     </script>
 </body>
