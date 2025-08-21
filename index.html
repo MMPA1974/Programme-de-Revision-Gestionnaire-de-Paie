@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme de Révision - Gestionnaire de Paie</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        /* Light Mode */
+        body[data-theme="light"] {
+            background-color: #f3f4f6;
+            color: #333;
+        }
+        body[data-theme="light"] .container {
+            background-color: #fcfbf8; /* Crème douce */
+        }
+        body[data-theme="light"] .section-header {
+            background-color: #f9fafb;
+            border-bottom-color: #e5e7eb;
+        }
+        body[data-theme="light"] .day-card {
+            background-color: #ffffff;
+            border-color: #e5e7eb;
+        }
+        body[data-theme="light"] .text-gray-700 {
+            color: #4b5563;
+        }
+        /* Light Mode - Alert Box specific colors */
+        body[data-theme="light"] .alert-box {
+            background-color: #fef3c7;
+            border-color: #fbbf24;
+            color: #a16207;
+        }
+        body[data-theme="light"] .alert-box .font-semibold {
+            color: #78350f;
+        }
+
+
+        /* Dark Mode */
+        body[data-theme="dark"] {
+            background-color: #0d1a2d; /* Bleu nuit premium */
+            color: #e2e8f0;
+        }
+        body[data-theme="dark"] .container {
+            background-color: #1F2937; /* Bleu-gris foncé (slate-800) */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        body[data-theme="dark"] .section-header {
+            background-color: #2d3748;
+            border-bottom-color: #4a5568;
+        }
+        body[data-theme="dark"] .day-card {
+            background-color: #2d3748; /* Darker background for day cards */
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body[data-theme="dark"] .text-gray-700 {
+            color: #cbd5e0;
+        }
+        body[data-theme="dark"] .text-gray-900 {
+            color: #f7fafc;
+        }
+        /* Dark Mode - Alert Box specific colors */
+        body[data-theme="dark"] .alert-box {
+            background-color: #7c2d12;
+            border-color: #f97316;
+            color: #ffedd5;
+        }
+        body[data-theme="dark"] .alert-box .font-semibold {
+            color: #fff7ed;
+        }
+
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.5rem 0.5rem 0 0;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .week-block {
+            margin-bottom: 2rem;
+        }
+
+        .day-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+        .day-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .course-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+        .course-list li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .course-list li:before {
+            content: '📚'; /* Book emoji for course items */
+            margin-right: 0.5rem;
+        }
+
+        /* Block-specific colors for section headers */
+        .block-pink {
+            background-color: #fce7f3;
+            color: #be185d;
+        }
+        .block-orange {
+            background-color: #fff7ed;
+            color: #ea580c;
+        }
+        .block-yellow {
+            background-color: #fffbeb;
+            color: #d97706;
+        }
+
+        /* Control buttons for theme, sound, print */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .control-button {
+            padding: 0.75rem 1.25rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .control-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .control-button.rounded-pill {
+            border-radius: 9999px;
+        }
+        .control-button.rounded-rect {
+            border-radius: 0.5rem;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            body > *:not(.container) {
+                display: none !important;
+            }
+            .control-buttons, .alert-box, .external-links {
+                display: none !important;
+            }
+            .container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: none !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+            .week-block {
+                page-break-after: always; /* Each week on a new page */
+            }
+            .week-block:last-child {
+                page-break-after: auto;
+            }
+            .day-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important; /* Add border for print clarity */
+            }
+            /* Ensure text is black on print */
+            body, .section-header, .day-card, .course-list li {
+                color: #000 !important;
+                background-color: #fff !important;
+                border-color: #ccc !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800" data-theme="light">
+    <div class="container shadow-lg rounded-xl overflow-hidden p-6 md:p-8">
+
+        <div class="control-buttons">
+            <!-- WhatsApp and Discord at the top with distinct rectangular shape -->
+            <a href="https://chat.whatsapp.com/EtV0ux5ipAG5JDhopzo0ut" target="_blank" rel="noopener noreferrer" class="control-button whatsapp-button rounded-rect">
+                <span>💬</span>
+                <span>WhatsApp</span>
+            </a>
+            <a href="https://discord.com/invite/cBnBkGDFgk" target="_blank" rel="noopener noreferrer" class="control-button discord-button rounded-rect">
+                <span>🎮</span>
+                <span>Discord</span>
+            </a>
+        </div>
+        <div class="control-buttons mt-4"> <!-- Separated for visual distinction -->
+            <!-- Other control buttons below with rounded-pill shape -->
+            <button id="theme-toggle" class="control-button primary-action rounded-pill">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Mode Nuit</span>
+            </button>
+            <button id="sound-toggle" class="control-button secondary-action rounded-pill">
+                <span id="sound-icon">🔊</span>
+                <span id="sound-text">Son ON</span>
+            </button>
+            <button id="print-button" class="control-button tertiary-action rounded-pill">
+                <span>🖨️</span>
+                <span>Imprimer</span>
+            </button>
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-6 text-gray-900">
+            Programme de Révision : Gestionnaire de Paie 🎯
+        </h1>
+
+        <div class="alert-box text-center border-l-4 p-4 rounded-lg mb-8 shadow-md" role="alert">
+            <p class="font-bold text-lg">PLANIFIEZ VOTRE SUCCÈS !</p>
+            <p class="mt-2 text-base">Ce programme est conçu pour vous guider durant les **4 semaines** précédant votre épreuve. Chaque session dure environ **2 heures** et est flexible sur **4 à 5 jours par semaine**. Adaptez-le à votre rythme ! 💪</p>
+        </div>
+
+        <!-- Semaine 1 -->
+        <div class="week-block">
+            <h2 class="section-header block-pink rounded-t-lg mb-4">Semaine 1 : Fondamentaux & Paie (Paramétrage & Variables) 📚</h2>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 1 : Warm-up & Bases Essentielles (Optionnel)</h3>
+                <p class="text-gray-700">Si vous avez besoin de rafraîchir vos connaissances de base, c'est le moment !</p>
+                <ul class="course-list">
+                    <li>B0_M1_Maîtriser les notions mathématiques de base</li>
+                    <li>B0_M2_Acquérir les bases du droit social et de la gestion de la paie</li>
+                    <li>B0_M3_Réaliser des écrits professionnels (focus sur la rédaction claire)</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C1.1 - Paramétrage du Logiciel de Paie</h3>
+                <ul class="course-list">
+                    <li>B1_M1_005_La création d'une société</li>
+                    <li>B1_M1_006_Le paramétrage d'une société</li>
+                    <li>B1_M1_008_La création des fiches salariés</li>
+                    <li>B1_M1_011_Le paramétrage des cotisations sociales</li>
+                    <li>B1_M1_016_Synthèse et application : Paramétrer le logiciel de paie</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 1)</h3>
+                <ul class="course-list">
+                    <li>B1_M2_004_Le temps de travail</li>
+                    <li>B1_M2_005_La rémunération</li>
+                    <li>B1_M3_008_La rémunération brute : le salaire de base, les primes et la retenue pour absence</li>
+                    <li>B1_M3_009_La rémunération brute : les heures supplémentaires et le dimanche travaillé</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 2)</h3>
+                <ul class="course-list">
+                    <li>B1_M3_003_La rémunération brute : l'acquisition et la prise de congés payés</li>
+                    <li>B1_M3_004_La rémunération brute : l’indemnité de congés payés</li>
+                    <li>B1_M3_011_La rémunération brute : les avantages en nature</li>
+                    <li>B1_M3_012_La rémunération brute : l’arrêt de travail, la retenue pour absence, la subrogation et les IJSS</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C1.2 - Collecte & Traitement des Variables (Partie 3)</h3>
+                <ul class="course-list">
+                    <li>B1_M4_006_Le bulletin de salaire Apprenti</li>
+                    <li>B1_M4_007_La gratification stagiaire</li>
+                    <li>B1_M4_008_Synthèse et application : Collecter et traiter les variables de paie</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Semaine 2 -->
+        <div class="week-block">
+            <h2 class="section-header block-orange rounded-t-lg mb-4">Semaine 2 : Paie (Contrôle, Édition & Déclarations) 📈</h2>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 1)</h3>
+                <ul class="course-list">
+                    <li>B1_M5_001_Les diverses cotisations sociales</li>
+                    <li>B1_M5_002_Les bases de calcul des cotisations sociales</li>
+                    <li>B1_M5_003_Les réductions de cotisations sociales</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C1.3 - Contrôle & Édition des Bulletins (Partie 2)</h3>
+                <ul class="course-list">
+                    <li>B1_M5_005_Le salaire net et le salaire imposable</li>
+                    <li>B1_M5_006_Les impacts du prélèvement à la source</li>
+                    <li>B1_M5_008_Synthèse et application : Contrôler et éditer les Bulletins de paie</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 1)</h3>
+                <ul class="course-list">
+                    <li>B1_M6_003_Les modalités déclaratives</li>
+                    <li>B1_M6_005_Le contenu des déclarations sociales : les cotisations, le PAS et les contributions sociales</li>
+                    <li>B1_M6_006_La gestion des arrêts de travail en paie</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C1.4 - Réalisation des Déclarations Sociales (Partie 2)</h3>
+                <ul class="course-list">
+                    <li>B1_M6_007_La taxe d'apprentissage</li>
+                    <li>B1_M6_008_La gestion de la déclaration d'emploi des travailleurs handicapés</li>
+                    <li>B1_M6_012_Synthèse et application : Gérer les déclarations sociales</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C1.5 - Analyse des Écarts Paie/Comptabilité</h3>
+                <ul class="course-list">
+                    <li>B1_M7_004_Les opérations comptables issues de la paie</li>
+                    <li>B1_M7_005_Comptabilisation de la paie</li>
+                    <li>B1_M7_006_L'analyse des causes</li>
+                    <li>B1_M7_009_Synthèse et application : Analyser les écarts entre la paie et la comptabilité</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Semaine 3 -->
+        <div class="week-block">
+            <h2 class="section-header block-yellow rounded-t-lg mb-4">Semaine 3 : Gestion Administrative du Personnel 📋</h2>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C2.1 - Établissement des Contrats de Travail</h3>
+                <ul class="course-list">
+                    <li>B2_M1_003_Maîtriser la rédaction d’un contrat de travail</li>
+                    <li>B2_M1_005_Le contrat de travail à durée indéterminée</li>
+                    <li>B2_M1_006_Le CDD et le contrat de travail temporaire</li>
+                    <li>B2_M1_010_Synthèse et application : Etablir les contrats de travail</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 1)</h3>
+                <ul class="course-list">
+                    <li>B2_M2_003_Les formalités administratives d'embauche</li>
+                    <li>B2_M2_006_La rupture du contrat de travail : introduction</li>
+                    <li>B2_M2_007_Le licenciement</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C2.2 - Formalités d'Embauche & Départ (Partie 2)</h3>
+                <ul class="course-list">
+                    <li>B2_M2_009_Les fins de contrat : cas du CDD, ICP, Indemnité RTT, ...</li>
+                    <li>B2_M2_010_Les fins de contrat : rupture conventionnelle, départ et mise à la retraite</li>
+                    <li>B2_M2_012_L'édition des documents de fin de contrat</li>
+                    <li>B2_M2_013_Synthèse et application : Traiter les entrées et sorties des salariés</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétence C2.3 - Gestion des Dossiers du Personnel</h3>
+                <ul class="course-list">
+                    <li>B2_M3_004_La digitalisation des dossiers du personnel</li>
+                    <li>B2_M3_006_RGPD : Règlement Général de Protection des Données</li>
+                    <li>B2_M3_007_Synthèse et application : Gérer les dossiers du personnel</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 5 : Compétence C2.4 - Communication avec Partenaires Externes</h3>
+                <ul class="course-list">
+                    <li>B2_M4_001_Les partenaires externes du service paie</li>
+                    <li>B2_M4_007_Le rôle et le contrôle de l'URSSAF</li>
+                    <li>B2_M4_008_Synthèse et application : Communiquer avec les partenaires externes</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Semaine 4 -->
+        <div class="week-block">
+            <h2 class="section-header block-pink rounded-t-lg mb-4">Semaine 4 : Conseil & Assistance + Révision Générale 🚀</h2>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 1 : Compétence C3.1 - Réalisation d'une Veille Juridique</h3>
+                <ul class="course-list">
+                    <li>B3_M1_002_La démarche de veille</li>
+                    <li>B3_M1_003_La veille juridique</li>
+                    <li>B3_M1_011_Comment effectuer une veille active</li>
+                    <li>B3_M1_013_Synthèse et application : Réaliser une veille juridique</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 2 : Compétence C3.2 - Diagnostic de Conformité de la Paie</h3>
+                <ul class="course-list">
+                    <li>B3_M2_001_L'analyse documentaire</li>
+                    <li>B3_M2_003_L'identification des écarts</li>
+                    <li>B3_M2_004_L'identification des risques encourus</li>
+                    <li>B3_M2_007_Synthèse et application : Diagnostiquer le conformité de la paie</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 3 : Compétence C3.3 - Communication avec Collaborateurs & Managers</h3>
+                <ul class="course-list">
+                    <li>B3_M3_001_Les fondamentaux de la communication professionnelle</li>
+                    <li>B3_M3_002_L'écoute active</li>
+                    <li>B3_M3_006_Rédiger une réponse professionnelle</li>
+                    <li>B3_M3_011_Synthèse et application : Communiquer avec les collaborateurs et managers</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 4 : Compétences C3.4 & C3.5 - Reporting & Assistance SIRH</h3>
+                <ul class="course-list">
+                    <li>B3_M4_001_Les fondamentaux d'excel</li>
+                    <li>B3_M4_005_L'édition des tableaux de bord sociaux</li>
+                    <li>B3_M5_003_Les fonctionnalités du SIRH</li>
+                    <li>B3_M5_007_L'utilisation du SIRH au quotidien par le collaborateur</li>
+                    <li>B3_M5_010_Synthèse et application : Assister les utilisateurs du SIRH</li>
+                </ul>
+            </div>
+            <div class="day-card">
+                <h3 class="font-bold text-lg mb-2">Jour 5 : Révision Générale & Pratique Intensive ! ✨</h3>
+                <p class="text-gray-700">Consacrez cette journée à :</p>
+                <ul class="course-list">
+                    <li>Revoir les notions qui vous semblent encore floues.</li>
+                    <li>Refaire des exercices pratiques ou des cas d'étude.</li>
+                    <li>Simuler des mises en situation professionnelle.</li>
+                    <li>Repasser sur les synthèses de chaque bloc.</li>
+                    <li>**Détendez-vous et ayez confiance en vous !**</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-8 text-gray-700">
+            <p class="mb-4">Ce programme est une suggestion. N'hésitez pas à l'adapter en fonction de vos forces et faiblesses. Le plus important est la régularité et la compréhension des concepts clés !</p>
+            <p class="font-bold">Bon courage pour votre épreuve ! Vous allez y arriver ! 🎉</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme and sound logic (simplified as no interactive elements here, but kept for consistency)
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const soundToggle = document.getElementById('sound-toggle');
+            const printButton = document.getElementById('print-button');
+
+            let isSoundOn = localStorage.getItem('isSoundOn') === 'true';
+            let audioContext;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.warn('Web Audio API non supporté dans ce navigateur.');
+            }
+
+            const playClickSound = () => {
+                if (!isSoundOn || !audioContext) return;
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(490, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            };
+
+            const setTheme = (theme) => {
+                body.dataset.theme = theme;
+                const themeIcon = document.getElementById('theme-icon');
+                const themeText = document.getElementById('theme-text');
+                if (theme === 'dark') {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Mode Jour';
+                } else {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Mode Nuit';
+                }
+                localStorage.setItem('theme', theme);
+            };
+
+            const updateSoundToggleButton = () => {
+                const soundIcon = document.getElementById('sound-icon');
+                const soundText = document.getElementById('sound-text');
+                if (isSoundOn) {
+                    soundIcon.textContent = '🔊';
+                    soundText.textContent = 'Son ON';
+                } else {
+                    soundIcon.textContent = '🔇';
+                    soundText.textContent = 'Son OFF';
+                }
+                localStorage.setItem('isSoundOn', isSoundOn);
+            };
+
+            // Load initial theme and sound state
+            setTheme(localStorage.getItem('theme') || 'light');
+            updateSoundToggleButton();
+
+            // Attach event listeners
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = body.dataset.theme;
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                playClickSound();
+            });
+
+            soundToggle.addEventListener('click', () => {
+                isSoundOn = !isSoundOn;
+                updateSoundToggleButton();
+                playClickSound(); // Play sound when toggling sound itself
+            });
+
+            printButton.addEventListener('click', () => {
+                window.print();
+            });
+        });
+    </script>
+</body>
+</html>
